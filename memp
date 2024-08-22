@@ -9,10 +9,8 @@ fi
 
 APP_NAME="$1"
 
-# Use pgrep to make it more robust and simple
 TOTAL_PROCESSES=$(pgrep -f "$APP_NAME" | wc -l)
 
-# Check if any processes exist
 if [ "$TOTAL_PROCESSES" -eq 0 ]; then
   echo "No processes found for application: $APP_NAME"
   exit 1
