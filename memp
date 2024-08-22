@@ -9,8 +9,16 @@ fi
 
 APP_NAME="$1"
 
-TOTAL_PROCESSES=$(ps aux | grep "$APP_NAME" | grep -v grep | wc -l)
-TOTAL_MEMORY_KB=$(ps aux | grep "$APP_NAME" | grep -v grep | awk '{x+=$6} END {print x}')
+# Use pgrep to make it more robust and simple
+TOTAL_PROCESSES=$(pgrep -f "$APP_NAME" | wc -l)
+
+# Check if any processes exist
+if [ "$TOTAL_PROCESSES" -eq 0 ]; then
+  echo "No processes found for application: $APP_NAME"
+  exit 1
+fi
+
+TOTAL_MEMORY_KB=$(ps aux | grep "$APP_NAME" | grep -v grep | awk '{sum+=$6} END {print sum}')
 TOTAL_MEMORY_GB=$(echo "scale=2; $TOTAL_MEMORY_KB / $KB_TO_GB" | bc)
 
 echo "Total processes: $TOTAL_PROCESSES"
